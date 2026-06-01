@@ -10,7 +10,7 @@
 
 - **Runtime:** Bun
 - **Language:** TypeScript
-- **Server:** Fastify
+- **Server:** Hono
 
 ## Getting Started
 

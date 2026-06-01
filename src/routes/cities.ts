@@ -1,37 +1,36 @@
-import type { FastifyPluginAsync } from "fastify";
+import { Hono } from "hono";
 import getCities from "../api/getCities";
 import getCity from "../api/getCity";
 import { validateCityId } from "../utils/validation";
 
-const citiesRoute: FastifyPluginAsync = async (server) => {
-  server.get<{
-    Querystring: {
-      cityId?: string;
-    };
-  }>("/cities", async (request, reply) => {
-    const { cityId: rawCityId } = request.query;
+const citiesRoute = new Hono();
 
-    if (rawCityId === undefined) {
-      return getCities();
-    }
+citiesRoute.get("/cities", async (c) => {
+  const rawCityId = c.req.query("cityId");
 
-    const cityId = validateCityId(rawCityId);
+  if (rawCityId === undefined) {
+    return c.json(await getCities());
+  }
 
-    if (!cityId.ok) {
-      return reply.code(400).send({ error: cityId.message });
-    }
+  const cityId = validateCityId(rawCityId);
 
-    const city = await getCity(cityId.value);
+  if (!cityId.ok) {
+    return c.json({ error: cityId.message }, 400);
+  }
 
-    if (city === null) {
-      return reply.code(404).send({
+  const city = await getCity(cityId.value);
+
+  if (city === null) {
+    return c.json(
+      {
         error: "City not found",
         cityId: cityId.value,
-      });
-    }
+      },
+      404,
+    );
+  }
 
-    return city;
-  });
-};
+  return c.json(city);
+});
 
 export default citiesRoute;

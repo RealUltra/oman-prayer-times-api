@@ -5,15 +5,15 @@
   "private": true,
   "devDependencies": {
     "@types/bun": "latest",
-    "@types/node": "^25.9.1"
+    "@types/node": "^25.9.1",
+    "wrangler": "^4.95.0"
   },
   "peerDependencies": {
     "typescript": "^5"
   },
   "dependencies": {
-    "@fastify/rate-limit": "^10.3.0",
     "cheerio": "^1.2.0",
-    "fastify": "^5.8.5",
+    "hono": "^4.12.23",
     "lru-cache": "^11.5.1"
   }
 }

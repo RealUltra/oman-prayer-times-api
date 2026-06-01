@@ -5,5 +5,3 @@ export const CITIES_CACHE_SIZE = 1;
 
 export const ONE_DAY_MS = 24 * 60 * 60 * 1000;
 export const ONE_MONTH_MS = 30 * ONE_DAY_MS;
-
-export const REQUESTS_PER_MIN = 120;

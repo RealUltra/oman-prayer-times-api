@@ -1,36 +1,16 @@
-import Fastify from "fastify";
-import rateLimit from "@fastify/rate-limit";
-import prayerTimesRoute from "./routes/prayer-times";
+import { Hono } from "hono";
 import citiesRoute from "./routes/cities";
-import { REQUESTS_PER_MIN } from "./constants";
+import prayerTimesRoute from "./routes/prayer-times";
 
-const server = Fastify({
-  logger: true,
-});
+const app = new Hono();
 
 // Index route
-server.get("/", (request, reply) => {
-  return { status: "Server is up and running!" };
-});
-
-// Rate limiting
-await server.register(rateLimit, {
-  max: REQUESTS_PER_MIN,
-  timeWindow: "1 minute",
+app.get("/", (c) => {
+  return c.json({ status: "Server is up and running!" });
 });
 
 // Register routes
-server.register(prayerTimesRoute, { prefix: "/api/v1" });
-server.register(citiesRoute, { prefix: "/api/v1" });
+app.route("/api/v1", citiesRoute);
+app.route("/api/v1", prayerTimesRoute);
 
-// Start server
-async function startServer() {
-  try {
-    await server.listen({ port: 3000 });
-  } catch (err) {
-    server.log.error(err);
-    process.exit(1);
-  }
-}
-
-startServer();
+export default app;
