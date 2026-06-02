@@ -43,6 +43,24 @@ export function validateMonth(
   return parsed;
 }
 
+export function validateDay(
+  value: string | undefined,
+): ValidationResult<number | undefined> {
+  if (value === undefined) {
+    return { ok: true, value: undefined };
+  }
+
+  const parsed = validateIntegerParam("day", value);
+
+  if (!parsed.ok) return parsed;
+
+  if (parsed.value < 1 || parsed.value > 31) {
+    return { ok: false, message: "day must be between 1 and 31" };
+  }
+
+  return parsed;
+}
+
 export function validateCityId(
   value: string | undefined,
 ): ValidationResult<number> {

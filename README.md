@@ -28,11 +28,13 @@ Optional query parameters:
 - `cityId`: City ID. Defaults to `0`.
 - `year`: Gregorian year. Defaults to the current year.
 - `month`: Month number from `1` to `12`. If omitted, all months for the year are returned.
+- `day`: Day number from `1` to `31`. If provided with `month`, only that day is returned.
 
 Example:
 
 ```txt
 /api/v1/prayer-times?cityId=0&year=2026&month=6
+/api/v1/prayer-times?cityId=0&year=2026&month=6&day=2
 ```
 
 ## Tech Stack

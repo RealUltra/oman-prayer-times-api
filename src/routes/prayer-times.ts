@@ -3,6 +3,7 @@ import getPrayerTimes from "../api/getPrayerTimes";
 import getCity from "../api/getCity";
 import {
   validateCityId,
+  validateDay,
   validateMonth,
   validateYear,
 } from "../utils/validation";
@@ -12,12 +13,14 @@ const prayerTimesRoute = new Hono();
 prayerTimesRoute.get("/prayer-times", async (c) => {
   const rawYear = c.req.query("year");
   const rawMonth = c.req.query("month");
+  const rawDay = c.req.query("day");
   const rawCityId = c.req.query("cityId");
 
   // Validate queries
   const cityId = validateCityId(rawCityId);
   const year = validateYear(rawYear);
   const month = validateMonth(rawMonth);
+  const day = validateDay(rawDay);
 
   if (!cityId.ok) {
     return c.json({ error: cityId.message }, 400);
@@ -29,6 +32,10 @@ prayerTimesRoute.get("/prayer-times", async (c) => {
 
   if (!month.ok) {
     return c.json({ error: month.message }, 400);
+  }
+
+  if (!day.ok) {
+    return c.json({ error: day.message }, 400);
   }
 
   // Get city
@@ -68,6 +75,12 @@ prayerTimesRoute.get("/prayer-times", async (c) => {
       month.value,
       cityId.value,
     );
+
+    if (day.value !== undefined) {
+      const date = `${year.value}-${String(month.value).padStart(2, "0")}-${String(day.value).padStart(2, "0")}` as ISODateString;
+      const prayerTimes = payload.prayerTimes[date];
+      payload.prayerTimes = prayerTimes ? { [date]: prayerTimes } : {};
+    }
   }
 
   return c.json(payload);
